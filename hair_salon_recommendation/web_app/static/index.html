@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>理发店个性化推荐系统</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- 引入高德地图JS API，使用地图渲染专用密钥 -->
+    <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=ec4cf0d74207e22a6e0c76f81cc6e50f"></script>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-brand">
+                <span class="brand-name">HairStyle</span>
+            </div>
+            <div class="navbar-menu">
+                <a href="#" class="nav-link">首页</a>
+                <a href="#recommend" class="nav-link">推荐</a>
+                <a href="#styles" class="nav-link">发型风格</a>
+                <a href="#about" class="nav-link">关于</a>
+            </div>
+            <button class="btn btn-primary" id="experienceBtn">立即体验</button>
+        </div>
+    </nav>
+
+    <!-- 英雄区域 -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">发现最适合你的理发店</h1>
+                <p class="hero-subtitle">基于位置与社交媒体分析的个性化推荐</p>
+                
+                <!-- 位置授权按钮 -->
+                <div class="location-section">
+                    <button class="btn btn-primary" id="locationBtn">
+                        <span class="location-icon">📍</span>
+                        授权获取位置
+                    </button>
+                    <p class="location-hint">点击按钮获取您的位置，我们将为您推荐附近的理发店</p>
+                </div>
+                
+                <!-- 搜索区域 -->
+                <div class="search-section">
+                    <div class="search-box">
+                        <input type="text" placeholder="输入你所在的位置" class="search-input">
+                        <button class="search-btn">搜索</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 地图区域 -->
+    <section class="map-section">
+        <div class="container">
+            <div class="map-container">
+                <div id="map" class="map"></div>
+                <div class="map-controls">
+                    <h3>附近的理发店</h3>
+                    <div class="map-legend">
+                        <div class="legend-item">
+                            <span class="legend-marker user-marker">📍</span>
+                            <span class="legend-text">您的位置</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-marker salon-marker">💈</span>
+                            <span class="legend-text">理发店</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 流行发型风格 -->
+    <section class="hair-styles" id="styles">
+        <div class="container">
+            <h2 class="section-title">流行发型风格</h2>
+            <p class="section-subtitle">发现当下最受欢迎的发型趋势</p>
+            
+            <div class="styles-grid">
+                <div class="style-card">
+                    <div class="style-image" style="background-image: url('src/辛芷蕾.jpg');"></div>
+                    <h3 class="style-title">辛芷蕾发型</h3>
+                    <p class="style-description">层次感强，适合多种脸型</p>
+                </div>
+                <div class="style-card">
+                    <div class="style-image" style="background-image: url('src/气垫烫.jpg');"></div>
+                    <h3 class="style-title">气垫烫</h3>
+                    <p class="style-description">自然蓬松，打造慵懒感</p>
+                </div>
+                <div class="style-card">
+                    <div class="style-image" style="background-image: url('src/法式烫.jpg');"></div>
+                    <h3 class="style-title">法式烫</h3>
+                    <p class="style-description">浪漫卷发，优雅气质</p>
+                </div>
+                <div class="style-card">
+                    <div class="style-image" style="background-image: url('src/空气刘海.jpg');"></div>
+                    <h3 class="style-title">空气刘海</h3>
+                    <p class="style-description">轻盈自然，减龄效果佳</p>
+                </div>
+                <div class="style-card">
+                    <div class="style-image" style="background-image: url('src/羊毛卷.jpg');"></div>
+                    <h3 class="style-title">羊毛卷</h3>
+                    <p class="style-description">复古蓬松，显脸小</p>
+                </div>
+                <div class="style-card">
+                    <div class="style-image" style="background-image: url('src/锁骨发.jpg');"></div>
+                    <h3 class="style-title">锁骨发</h3>
+                    <p class="style-description">优雅大方，适合多种脸型</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 推荐类型 -->
+    <section class="recommend-types" id="recommend">
+        <div class="container">
+            <h2 class="section-title">推荐类型</h2>
+            <p class="section-subtitle">选择最适合你的推荐方式</p>
+            
+            <div class="types-grid">
+                <div class="type-card" data-type="distance">
+                    <div class="type-icon">📍</div>
+                    <h3 class="type-title">距离优先</h3>
+                    <p class="type-description">推荐离你最近的优质理发店</p>
+                    <!-- 距离选择 -->
+                    <div class="distance-options" style="display: none;">
+                        <label>选择距离范围：</label>
+                        <select class="distance-select">
+                            <option value="1000">1公里</option>
+                            <option value="3000">3公里</option>
+                            <option value="5000" selected>5公里</option>
+                            <option value="10000">10公里</option>
+                            <option value="0">同城</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="type-card" data-type="review">
+                    <div class="type-icon">⭐</div>
+                    <h3 class="type-title">好评优先</h3>
+                    <p class="type-description">基于用户评价的高分推荐</p>
+                    <!-- 好评优先无需额外参数 -->
+                </div>
+                <div class="type-card" data-type="hair_style">
+                    <div class="type-icon">💇</div>
+                    <h3 class="type-title">风格优先</h3>
+                    <p class="type-description">根据你喜欢的发型风格推荐</p>
+                    <!-- 发型输入 -->
+                    <div class="style-options" style="display: none;">
+                        <label>输入所需发型：</label>
+                        <input type="text" placeholder="如：辛芷蕾发型" class="style-input">
+                    </div>
+                </div>
+                <div class="type-card" data-type="topic">
+                    <div class="type-icon">🎨</div>
+                    <h3 class="type-title">主题优先</h3>
+                    <p class="type-description">根据你需要的服务主题推荐</p>
+                    <!-- 主题选择 -->
+                    <div class="topic-options" style="display: none;">
+                        <label>选择服务主题：</label>
+                        <select class="topic-select">
+                            <option value="理发">理发</option>
+                            <option value="烫染">烫染</option>
+                            <option value="洗头">洗头</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 开始推荐按钮 -->
+            <div class="recommend-action">
+                <button class="btn btn-primary" id="startRecommendBtn">开始推荐</button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 推荐结果 -->
+    <section class="recommend-results">
+        <div class="container">
+            <div class="results-header">
+                <h2 class="section-title">推荐结果</h2>
+                <div class="results-filter">
+                    <select class="filter-select">
+                        <option value="all">全部</option>
+                        <option value="high_rated">高分优先</option>
+                        <option value="nearest">最近优先</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="results-grid" id="resultsGrid">
+                <!-- 推荐结果将通过JavaScript动态生成 -->
+            </div>
+        </div>
+    </section>
+    
+    <!-- 推荐语和推荐报告 -->
+    <section class="recommendation-report-section">
+        <div class="container">
+            <div id="recommendationPhrase" class="recommendation-phrase-container"></div>
+            <div id="recommendationReport" class="recommendation-report-container"></div>
+        </div>
+    </section>
+    
+    <!-- 毒舌辣评 -->
+    <section class="salon-reviews-section">
+        <div class="container">
+            <div id="salonReviews" class="salon-reviews-container"></div>
+        </div>
+    </section>
+    
+    <!-- 相似度最高的帖子 -->
+    <section class="similar-posts">
+        <div class="container">
+            <h2 class="section-title">相似度最高的帖子</h2>
+            <div class="similar-posts-grid" id="similarPostsGrid">
+                <!-- 相似度最高的帖子将通过JavaScript动态生成 -->
+            </div>
+        </div>
+    </section>
+
+    <!-- 关于我们 -->
+    <section class="about" id="about">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-text">
+                    <h2 class="section-title">关于我们</h2>
+                    <p class="about-description">
+                        理发店个性化推荐系统是一个基于位置与社交媒体文本分析的学术研究项目。
+                        我们利用先进的自然语言处理技术，分析社交媒体上的理发店评价，
+                        为用户提供距离优先、好评优先及发型风格优先的分类推荐。
+                    </p>
+                    <p class="about-description">
+                        本项目严格限制在学术研究范畴，数据采集采用最小数据集、非商业、匿名化原则。
+                    </p>
+                </div>
+                <div class="about-image">
+                    <div class="image-placeholder"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <span class="brand-name">HairStyle</span>
+                    <p class="brand-description">基于位置与社交媒体分析的理发店推荐系统</p>
+                </div>
+                <div class="footer-links">
+                    <a href="#" class="footer-link">首页</a>
+                    <a href="#recommend" class="footer-link">推荐</a>
+                    <a href="#styles" class="footer-link">发型风格</a>
+                    <a href="#about" class="footer-link">关于</a>
+                </div>
+                <div class="footer-contact">
+                    <p class="contact-info">学术研究项目</p>
+                    <p class="contact-info">2025 YIWEI Barber Shop Recommendation System</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
